@@ -1,10 +1,9 @@
 # inla results 
 library('tidyverse')
-
 library('INLA')
 library('sf')
-#library('viridis')
-# for results 
+
+# easy reporting results 
 library('brinla')
 
 
@@ -82,21 +81,9 @@ mod.inla3 <- inla(total_founded ~ year +   scale(log(total_population)) +
                   control.compute=list( cpo=TRUE, waic=TRUE))
 
 summary(mod.inla3)
-# IID ICAR over time 
-mod.inla4 <- inla(total_founded ~year +   scale(log(total_population)) + 
-                    vacancy_avg_std + perc_mob_std + total_disorder_std + 
-                    org_std + div_std + perc_black_std + perc_latinx_std + disadvantage_std +
-                    f(id, n = 2*n_t, model = "iid2d", hyper = prioriid2d) +  
-                    f(id1, year, copy = "id") +
-                    f(id2 ,group = year_id, model = "besag", graph = adj,control.group = list(model = "iid"),hyper =  besag_prior ), family= "poisson", offset = log(total_population),
-                  data=df,
-                  control.family=list(link='log'),
-                  control.fixed=list(mean=0, prec = 1),
-                  control.predictor=list(link=1, compute=TRUE),
-                  control.compute=list( cpo=TRUE, waic=TRUE))
-summary(mod.inla4)
+
 # AR1 ICAR
-mod.inla5 <- inla(total_founded ~ year +   scale(log(total_population)) + 
+mod.inla4 <- inla(total_founded ~ year +   scale(log(total_population)) + 
                     vacancy_avg_std + perc_mob_std + total_disorder_std + 
                     org_std + div_std + perc_black_std + perc_latinx_std + disadvantage_std +
                     f(id, n = 2*n_t, model = "iid2d", hyper = prioriid2d) +  f(id1, year, copy = "id") +
@@ -107,7 +94,7 @@ mod.inla5 <- inla(total_founded ~ year +   scale(log(total_population)) +
                   control.fixed=list(mean=0, prec = 1),
                   control.predictor=list(link=1, compute=TRUE),
                   control.compute=list( cpo=TRUE, waic=TRUE))
-summary(mod.inla5)
+summary(mod.inla4)
 # spline 
 nsx <-  splines::ns(df$total_orgs, knots = quantile(df$total_orgs, prob = c(.25,.75)), Boundary.knots = c(min(df$total_orgs), max(df$total_orgs))) 
 
@@ -134,8 +121,7 @@ summary(mod.inlaf.spl)
                 "2" = mod.inla2$waic$waic,
                 "3" = mod.inla3$waic$waic,
                 "4" = mod.inla4$waic$waic,
-                "5" = mod.inla5$waic$waic,
-                "6" = mod.inlaf.spl$waic$waic))
+                "5" = mod.inlaf.spl$waic$waic))
 
 
 
