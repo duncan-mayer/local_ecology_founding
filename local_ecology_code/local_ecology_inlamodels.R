@@ -141,10 +141,8 @@ modpred <- df |> select(total_orgs, meanp, uu, ll) |>  pivot_longer(cols = !tota
     geom_smooth( color = "black", formula = y ~ splines::ns(x,
                                                             knots = quantile(x, prob = c(.25,.75)), Boundary.knots = c(min(x), max(x))), se = FALSE) +
     scale_linetype_manual(values=c("dotted", "solid", "dotted"), labels=c('2.5 %', 'Mean', '97.5 %'))+
-    #scale_fill_discrete(labels=c('2.5 %', 'Mean', '97.5 %')) +
     coord_cartesian(ylim=c(0,15), xlim = c(0,500)) + 
     labs(y = "Founding events", x = "Nonprofit density",  linetype = "Prediction") + 
-    # guides(linetype=guide_legend(title="Average founding events",title.position="bottom"))
     theme_bw() +
     theme(text=element_text(family="Times New Roman",
                             size=12,),
