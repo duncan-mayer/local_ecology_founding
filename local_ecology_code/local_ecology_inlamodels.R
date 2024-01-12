@@ -136,14 +136,17 @@ df$meanp <- mod.inlaf.spl$summary.fitted.values$mean
 df$uu <- mod.inlaf.spl$summary.fitted.values$`0.975quant`
 df$ll <- mod.inlaf.spl$summary.fitted.values$`0.025quant`
 
-modpred <- df |> select(total_orgs, meanp, uu, ll) |>  pivot_longer(cols = !total_orgs, names_to = "prediction")
+modpred <- df |> select(total_orgs, meanp, uu, ll) |>  
+  pivot_longer(cols = !total_orgs, names_to = "prediction")
 (fig2 <- ggplot(data = modpred, aes(x = total_orgs, y = value, linetype = prediction)) + 
     geom_smooth( color = "black", formula = y ~ splines::ns(x,
                                                             knots = quantile(x, prob = c(.25,.75)), Boundary.knots = c(min(x), max(x))), se = FALSE) +
     scale_linetype_manual(values=c("dotted", "solid", "dotted"), labels=c('2.5 %', 'Mean', '97.5 %'))+
     coord_cartesian(ylim=c(0,15), xlim = c(0,500)) + 
-    labs(y = "Founding events", x = "Nonprofit density",  linetype = "Prediction") + 
+    labs(y = "Nonprofit founding events", x = "Nonprofit density",  linetype = "Prediction") + 
     theme_bw() +
     theme(text=element_text(family="Times New Roman",
                             size=12,),
           legend.position = "none") )
+
+
